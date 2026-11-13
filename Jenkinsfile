@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -12,42 +13,47 @@ pipeline {
             }
         }
 
-        stage('Install Node dependencies') {
+        stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                bat 'npm ci'
             }
         }
 
-        stage('Install Playwright browser') {
+        stage('Install Playwright Browser') {
             steps {
-                sh 'npx playwright install --with-deps chromium'
+                bat 'npx playwright install chromium'
             }
         }
 
-        stage('Run Playwright tests') {
+        stage('Run Playwright Tests') {
             steps {
-                sh 'npx playwright test'
+                bat 'npx playwright test'
             }
         }
     }
 
     post {
         always {
-            // Publish the HTML report as a downloadable build artifact.
-            archiveArtifacts artifacts: 'playwright-report/**, test-results/**',
-                             allowEmptyArchive: true
+            archiveArtifacts artifacts:
+                'playwright-report/**,test-results/**',
+                allowEmptyArchive: true
 
-            // Publish JUnit-style test results if the project produces them.
-            // This sample uses Playwright's HTML reporter; see README for
-            // optional JUnit reporter configuration.
+            publishHTML(target: [
+                reportDir: 'playwright-report',
+                reportFiles: 'index.html',
+                reportName: 'Playwright HTML Report',
+                keepAll: true,
+                alwaysLinkToLastBuild: true,
+                allowMissing: true
+            ])
         }
 
         success {
-            echo 'Playwright test run completed successfully.'
+            echo 'Playwright tests passed!'
         }
 
         failure {
-            echo 'Playwright pipeline or tests failed. Review Console Output and artifacts.'
+            echo 'Tests failed. Check Console Output and reports.'
         }
     }
 }
