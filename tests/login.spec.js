@@ -14,6 +14,8 @@ test('successful login redirects to products page', async ({ page }) => {
   await expect(page.getByText('Products')).toBeVisible();
 });
 
+//testing
+
 test('login button is visible', async ({ page }) => {
   await page.goto('/');
 
