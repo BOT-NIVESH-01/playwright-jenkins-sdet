@@ -30,7 +30,7 @@ test('invalid password displays an error message', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click();
 
   await expect(page.locator('[data-test="error"]')).toContainText(
-    'Username and password do not match'
+    'Username and password do not match...'
   );
 });
 
