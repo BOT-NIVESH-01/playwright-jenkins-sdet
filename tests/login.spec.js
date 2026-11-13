@@ -14,6 +14,14 @@ test('successful login redirects to products page', async ({ page }) => {
   await expect(page.getByText('Products')).toBeVisible();
 });
 
+test('login button is visible', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(
+    page.getByRole('button', { name: 'Login' })
+  ).toBeVisible();
+});
+
 test('invalid password displays an error message', async ({ page }) => {
   await page.goto('/');
 
